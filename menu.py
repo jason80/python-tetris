@@ -76,11 +76,14 @@ class MainMenu(Menu):
             MenuItem(self, "Quit", menu_x, menu_y + 75)
         ]
 
+        self.image = asset_manager.get_image("game_over.png")
+
         self.update_items()
 
     def item_action(self, item):
         if item.text == "Start game":
             self.game.board.enabled = True
+            self.game.board.g_over = False
             self.game.board.reset()
             self.kill()
 
@@ -100,6 +103,11 @@ class MainMenu(Menu):
 
         if item.text == "Quit":
             self.game.running = False
+
+    def draw(self, screen):
+        super().draw(screen)
+        if self.game.board.g_over:
+            screen.blit(self.image, (board_x + 40, board_y + 100))
 
 class PausedMenu(Menu):
     def __init__(self, game):

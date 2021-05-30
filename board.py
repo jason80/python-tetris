@@ -4,7 +4,7 @@ from piece import Piece
 from collide import *
 from display import Display
 from next_display import NextDisplay
-from menu import PausedMenu
+from menu import MainMenu, PausedMenu
 from engine.assets import asset_manager
 from engine.stage import Stage
 from engine.graphics import SpriteSheet
@@ -23,6 +23,8 @@ class Board(Stage):
 		self.matrix = []
 		self.piece = None
 		self.next_piece = None
+
+		self.g_over = False
 
 		self.stage = 0
 
@@ -141,6 +143,10 @@ class Board(Stage):
 		# Generates a new piece
 		self.piece = self.next_piece
 		self.next_piece = Piece(self)
+
+		# Game over
+		if collision_detected(self, self.piece):
+			self.game_over()
 		
 		# Check lines
 		lines = self.check_lines()
@@ -180,3 +186,8 @@ class Board(Stage):
 			line = [1, 1, 1] + line + [1, 1, 1]
 			self.matrix[y] = line
 			y -= 1
+
+	def game_over(self):
+		self.enabled = False
+		self.g_over = True
+		self.game.add_stage(MainMenu(self.game))
